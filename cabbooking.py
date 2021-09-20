@@ -234,3 +234,318 @@ class Rider(Driver):
             print(
                 "----------------------------------------------------\nYour Trip is ended.Thank you.\n----------------------------------------------------")
             self.Rider_Account_Login_Page()
+
+    # Function to show ride history of the rider
+    def History(self):
+        if self.Trip_Details == {}:
+            print(
+                "----------------------------------------------------\nOops,You haven't taken a ride with us yet and there seems to be no ride history to show now. Start riding with us.\n----------------------------------------------------")
+            self.Rider_Account_Login_Page()
+        else:
+            print("Your Ride history is as below : ")
+            for keys, values in self.Trip_Details.items():
+                print("----------------------------------------------------\nTrip_ID : ",
+                      self.Trip_Details[keys]["Trip_ID"], "--", "Driver_Name : ",
+                      self.Trip_Details[keys]["Driver_Name"], "--", "Vehicle_No : ",
+                      self.Trip_Details[keys]["Vehicle_No"], "--", "Driver_Contact_no : ",
+                      self.Trip_Details[keys]["Driver_Contact_no"], "--", "Date : ", self.Trip_Details[keys]["Date"],
+                      "\n----------------------------------------------------")
+            self.Rider_Account_Login_Page()
+
+
+class Admin:
+    def __init__(self, Admin_Name, Admin_ContactNo):
+        self.Admin_Name = Admin_Name
+        self.Admin_ContactNo = Admin_ContactNo
+    
+    # Function for Admin panel
+    def Admin_Account_Login_Page(self):
+        print(
+            f"-----------------------------\nHello, {self.Admin_Name}.Welcome to your account.Please find your account details below.\n-----------------------------\nName : {self.Admin_Name} \nContactNo : {self.Admin_ContactNo}")
+
+        while True:
+            try:
+                x = int(input(
+                    f"Please select an option from below. Please choose option number as your input \n 1 - To view all the Current Ongoing Trips\n 2 - To view all the registered Riders and Drivers data\n 3 - To exit from your account and go to Main interface\n"))
+                break
+            except Exception:
+                print("XXXX - Wrong input. Please try again - XXXX")
+
+        if x == 1:
+            self.All_Ongoing_Trips()
+
+        elif x == 2:
+            self.All_RidersAndDrivers_Info()
+
+        elif x == 3:
+            Main_Interface()
+
+        else:
+            print("XXXX - Wrong input. Please try again - XXXX")
+            self.Admin_Account_Login_Page()
+    
+    # Function to display all current ongoing trips
+    def All_Ongoing_Trips(self):
+        print(
+            "-----------------------------\nPlease find below the list of all ongoing Trips :\n-----------------------------")
+        if Current_Live_Booking_Data == {}:
+            print("Currently there seems to be no on-going trips")
+        else:
+            for key, value in Current_Live_Booking_Data.items():
+                print(value)
+        self.Admin_Account_Login_Page()
+    
+    # Function to display all Riders and Drivers Details
+    def All_RidersAndDrivers_Info(self):
+        print(
+            "-----------------------------\nPlease find the list of all Registered Riders and Drivers :\n-----------------------------")
+        if Master_Rider_Users == {}:
+            print("Currently there are no Riders registered in the system")
+        else:
+            print("Riders info : \n-----------------")
+            for key, value in Master_Rider_Users.items():
+                print("[Rider name : ", value.Cust_name, ",", "Rider Contact No : ", value.Cust_Contact_no, "]")
+        if Master_Driver_Users == {}:
+            print("Currently there are no Drivers registered in the system")
+        else:
+            print("Drivers info : \n-----------------")
+            for key, value in Master_Driver_Users.items():
+                print("[Driver name: ", value.Driver_Name, ",", "Driver Contact No : ", value.Driver_Contact_no,
+                      ", Driver Vehicle No : ", value.Vehicle_no, ", Vehicle Model Name : ", value.Vehicle_Model_Name,
+                      "]")
+
+        self.Admin_Account_Login_Page()
+
+
+# Function for Rider interface
+def Rider_Interface():
+    print("-----------------------------\nWelcome to the Rider Interface\n-----------------------------")
+    New_Existing = input(
+        "--> If you are a new user, Enter [new] \n--> If you are an already Existing user, Enter [existing] \n--> If you wish to Exit, please enter [exit] to go to main interface\n").upper()
+    if New_Existing == "NEW":
+        while True:
+            try:
+                name = input("Please enter your Name : ")
+                if name.strip() == "":
+                    raise Exception()
+                else:
+                    break
+            except Exception:
+                print("Name cannot be blank.Please try again")
+        while True:
+            try:
+                ContactNo = int(input("Please enter your 10-digit Contact no : "))
+                if len(str(ContactNo)) < 10:
+                    raise Exception()
+                break
+            except Exception:
+                print("XXXX - You have entered an incorrect input. Please input your 10-digit mobile no again. - XXXX")
+        while True:
+            try:
+                Cust_coordinates = list(
+                    map(float, (input("Please enter your current location cordinates x , y with spaces : ").split())))
+                if Cust_coordinates == [] or Cust_coordinates[0] == None or Cust_coordinates[1] == None:
+                    raise Exception()
+                break
+            except Exception:
+                print("XXXX - Incorrect input.Please try again - XXXX")
+        Master_Rider_Users[ContactNo] = Rider(name, ContactNo, Cust_coordinates)
+        Master_Rider_Users[ContactNo].Rider_Account_Login_Page()
+    elif New_Existing == "EXISTING":
+        while True:
+            try:
+                contactno = int(input("Please enter your 10-digit registered contact no : "))
+                if len(str(contactno)) < 10:
+                    raise Exception()
+                break
+            except Exception:
+                print("XXXX - You have entered an incorrect input. Please input your 10-digit mobile no again. - XXXX")
+        if contactno not in Master_Rider_Users.keys():
+            print(
+                "-----------------------------\nYou dont seem to be a registered user. Please create a account to continue.\n You will now be routed to the Rider interface again.\n-----------------------------")
+            Rider_Interface()
+        else:
+            Master_Rider_Users[contactno].Rider_Account_Login_Page()
+
+    elif New_Existing == "EXIT":
+        Main_Interface()
+
+    else:
+        print("-----------------------------\nWrong input.You will now be routed back to the Rider Interface.")
+        Rider_Interface()
+
+# function for Driver Interface
+def Driver_Interface():
+    print("-----------------------------\nWelcome to the Driver Interface.\n-----------------------------")
+    New_Existing = input(
+        "--> If you are a new user, Enter [new] \n--> If you are an already Existing user, Enter [existing] \n--> If you wish to Exit, please enter [exit] to go to main interface\n").upper()
+
+    if New_Existing == "NEW":
+        while True:
+            try:
+                name = input("Please enter your name : ")
+                if name.strip() == "":
+                    raise Exception()
+                else:
+                    break
+            except Exception:
+                print("Name cannot be blank.Please try again")
+        while True:
+            try:
+                ContactNo = int(input("Please enter your 10-digit Contact no : "))
+                if len(str(ContactNo)) < 10:
+                    raise Exception()
+                break
+            except Exception:
+                print("XXXX - You have entered an incorrect input. Please input your 10-digit mobile no again. - XXXX")
+        while True:
+            try:
+                cur_cordinates = list(map(float, input("Please enter your current location cordinates x , y with spaces : ").split()))
+                if cur_cordinates == [] or cur_cordinates[0] == None or cur_cordinates[1] == None:
+                    raise Exception()
+                break
+            except Exception:
+                print("XXXX - Incorrect input.Please try again - XXXX")
+        while True:
+            try:
+                vehicleNo = input("Please enter your vehicle no : ")
+                if vehicleNo.strip() == "":
+                    raise Exception()
+                else:
+                    break
+            except Exception:
+                print("Vehicle name cannot be blank.Please try again")
+        while True:
+            try:
+                ModelName = input("Please enter your Vehicle Model Name : ")
+                if ModelName.strip() == "":
+                    raise Exception()
+                else:
+                    break
+            except Exception:
+                print("Vehicle Model Name cannot be blank.Please try again")
+
+        while True:
+            try:
+                availability = input("Please enter your Availability. Enter YES if available, NO if not available : ").upper()
+                if availability.strip() == "":
+                    raise Exception()
+                elif availability != "YES" and availability != "NO":
+                    raise Exception()
+                else:
+                    break
+            except Exception:
+                print("XXXX - Incorrect input.Please try again - XXXX")
+        if availability == "YES":
+            availability = True
+        else:
+            availability = False
+        Master_Driver_Users[ContactNo] = Driver(name, ContactNo, cur_cordinates, vehicleNo, ModelName, availability)
+        Master_Driver_Users[ContactNo].Driver_Account_Login_Page()
+
+
+    elif New_Existing == "EXISTING":
+        while True:
+            try:
+                contactno = int(input("Please enter your 10-digit registered contact no : "))
+                if len(str(contactno)) < 10:
+                    raise Exception()
+                break
+            except Exception:
+                print("XXXX - You have entered an incorrect input. Please input your 10-digit mobile no again. - XXXX")
+        if contactno not in Master_Driver_Users.keys():
+            print(
+                "-----------------------------\nYou dont seem to be a registered user. Please create a account to continue.\n You will now be routed to the Driver interface again.")
+            Driver_Interface()
+        else:
+            Master_Driver_Users[contactno].Driver_Account_Login_Page()
+    elif New_Existing == "EXIT":
+        Main_Interface()
+
+    else:
+        print("-----------------------------\nWrong input.You will now be routed back to the Driver Interface.\n-----------------------------")
+        Driver_Interface()
+
+
+# Function for the Admin interface
+def Admin_Interface():
+    print("-----------------------------\nWelcome to the Admin Interface.\n-----------------------------")
+    New_Existing = input(
+        "--> If you are a new user, Enter [new] \n--> If you are an already Existing user, Enter [existing] \n--> If you wish to Exit, please enter [exit] to go to main interface\n").upper()
+    if New_Existing == "NEW":
+        while True:
+            try:
+                name = input("Please enter your name : ")
+                if name.strip() == "":
+                    raise Exception()
+                else:
+                    break
+            except Exception:
+                print("Name cannot be blank.Please try again")
+        while True:
+            try:
+                ContactNo = int(input("Please enter your contact no : "))
+                if len(str(ContactNo)) < 10:
+                    raise Exception()
+                break
+            except Exception:
+                print("You have entered wrong input or Mobile no is not 10 digits.Please try again")
+
+        Master_Admin[ContactNo] = Admin(name, ContactNo)
+        Master_Admin[ContactNo].Admin_Account_Login_Page()
+    elif New_Existing == "EXISTING":
+        while True:
+            try:
+                contactno = int(input("Please enter your 10-digit Contact no : "))
+                if len(str(contactno)) < 10:
+                    raise Exception()
+                break
+            except Exception:
+                print("XXXX - You have entered an incorrect input. Please input your 10-digit mobile no again. - XXXX")
+        if contactno not in Master_Admin.keys():
+            print(
+                "-----------------------------\nYou dont seem to be a registered user. Please create a account to continue.\n You will now be routed to the Admin interface again.\n-----------------------------")
+            Admin_Interface()
+        else:
+            Master_Admin[contactno].Admin_Account_Login_Page()
+
+    elif New_Existing == "EXIT":
+        Main_Interface()
+
+    else:
+        print("-----------------------------\nWrong input.You will now be routed back to Admin Interface.")
+        Admin_Interface()
+
+
+# Function for the Main interface.
+def Main_Interface():
+    global Master_Driver_Users
+    global Master_Rider_Users
+    print("-----------------------------\nHello & Welcome to Cab Booking Service Interface\n-----------------------------")
+    user = input(
+        "--> If you are a rider, Please enter[RIDER] \n--> If you are a driver, Please enter [DRIVER] \n--> If you are the Admin, Please enter[ADMIN] \n--> If you wish to exit from the application, Please enter [EXIT] \n").upper()
+    if user == "RIDER":
+        Rider_Interface()
+
+    elif user == "DRIVER":
+        Driver_Interface()
+
+    elif user == "ADMIN":
+        Admin_Interface()
+
+    elif user == "EXIT":
+        quit()
+
+    else:
+        print("XXXX - Wrong input. Please try again - XXXX")
+        Main_Interface()
+
+if __name__ == "__main__":
+    x = time.strftime("%d/%m/%y")
+    Master_Rider_Users = {}
+    Master_Driver_Users = {}
+    Master_Rider = {}
+    Master_Driver = {}
+    Master_Admin = {}
+    Current_Live_Booking_Data = {}
+    Main_Interface()

@@ -14,7 +14,7 @@ We want to build a cab booking platform to allow a rider to book a cab.
 
 ## Project Features
 
- Register a rider.
+* Register a rider.
 * Register a driver/cab
 * Update a cab's location
 * A driver can switch on/off his availability
