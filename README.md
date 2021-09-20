@@ -25,22 +25,34 @@ We want to build a cab booking platform to allow a rider to book a cab.
 
 
 
+## Documentation
+
+[CabBooking Project Document](https://docs.google.com/document/d/1aZ3Ba3e1ddO_JbWbw4GuchMDOZ67EU0m1vcKikVbBqM/edit?usp=sharing)
+
+  
 ## Tech Stack
 
 **Client:** Python
 
   
-## Deployment
+## To run this project
 
-To run this project, enter the following command in the parent folder
+Clone the project
+
+```bash
+  git clone https://github.com/attainu/python-project-nitin-nagaraj-au19.git
+```
+
+Go to the project directory
+
+```bash
+  cd python-project-nitin-nagaraj-au19
+```
+
+Run the command
 
 ```bash
   python3 cabbooking.py
 ```
-
-  
-## Documentation
-
-[CabBooking Project Document](https://docs.google.com/document/d/1aZ3Ba3e1ddO_JbWbw4GuchMDOZ67EU0m1vcKikVbBqM/edit?usp=sharing)
 
   
